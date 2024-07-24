@@ -1,0 +1,247 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>CSAPP深入理解计算机系统：数据在计算机中的表示 | Wayoung7's Blog</title><meta name="author" content="Wayoung7"><meta name="copyright" content="Wayoung7"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="CMU-213学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSAPP深入理解计算机系统：数据在计算机中的表示">
+<meta property="og:url" content="http://example.com/2024/07/21/cmu213/part1_data/index/index.html">
+<meta property="og:site_name" content="Wayoung7&#39;s Blog">
+<meta property="og:description" content="CMU-213学习笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2024-07-20T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-07-24T04:39:26.722Z">
+<meta property="article:author" content="Wayoung7">
+<meta property="article:tag" content="计算机系统">
+<meta property="article:tag" content="C">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2024/07/21/cmu213/part1_data/index/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'CSAPP深入理解计算机系统：数据在计算机中的表示',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-07-24 12:39:26'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr class="custom-hr"/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="Wayoung7's Blog"><span class="site-name">Wayoung7's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">CSAPP深入理解计算机系统：数据在计算机中的表示</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-07-20T16:00:00.000Z" title="发表于 2024-07-21 00:00:00">2024-07-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-07-24T04:39:26.722Z" title="更新于 2024-07-24 12:39:26">2024-07-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="CSAPP深入理解计算机系统：数据在计算机中的表示"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>CSAPP是所有计算机专业的学生和程序员必读的书，我自己直到读了这本书后，才认识到之前对于C语言和计算机的认识有多么浅薄。因此我想把自己读完这本书和听完CMU-213的公开课后的理解写成笔记分享给大家。</p>
+</blockquote>
+<h2 id="数据的机器级表示"><a href="#数据的机器级表示" class="headerlink" title="数据的机器级表示"></a>数据的机器级表示</h2><p><em>注：本篇文章默认读者已了解基本的数据单位（bit, byte）,位运算以及不同进制之间的转换，因此不再对这些概念进行解读</em></p>
+<p>我们可以暂且认为数据在计算机中的表示方式为一个由0和1组成的数组。</p>
+<h3 id="位运算（Bitwise-Operations）"><a href="#位运算（Bitwise-Operations）" class="headerlink" title="位运算（Bitwise Operations）"></a>位运算（Bitwise Operations）</h3><p>C语言中基本的位运算有<code>&amp;</code> <code>|</code> <code>~</code> <code>^</code> <code>&lt;&lt;</code> <code>&gt;&gt;</code>。我想重点讲一下移位操作，</p>
+<h5 id="左移（Left-Shift）"><a href="#左移（Left-Shift）" class="headerlink" title="左移（Left Shift）&lt;&lt;"></a>左移（Left Shift）<code>&lt;&lt;</code></h5><ul>
+<li>把所有位向左移动x格，丢掉左边溢出的位，右边用0补全，比如 <code>01100010 &lt;&lt; 3 == 00010000</code></li>
+</ul>
+<h5 id="右移（Right-Shift）"><a href="#右移（Right-Shift）" class="headerlink" title="右移（Right Shift）&gt;&gt;"></a>右移（Right Shift）<code>&gt;&gt;</code></h5><ul>
+<li>所有位向右移动x格，丢掉右边溢出的位，左边补全有两种方式：<ul>
+<li>Logical Shift：左边用<code>0</code>补全。</li>
+<li>Arithmetic Shift：用原先左边最高位补全，比如 <code>10100010 &gt;&gt; 3 = 11110100</code>, <code>01100010 &gt;&gt; 3 == 00001100</code>。</li>
+</ul>
+</li>
+</ul>
+<p>C语言中对于有符号整数，右移使用<code>Arithmetic Shift</code>，无符号整数右移使用<code>Logical Shift</code>。</p>
+<p>移位的距离小于<code>0</code>或大于等于一个字长（32位系统为<code>4 byte</code>，64位系统为<code>8 byte</code>）是未定义的。在大多数系统上，移位距离大于等于一个字长时，计算机会先把移位的距离模上字长，然后再移位，比如在<code>32</code>位系统中:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span>      a = <span class="number">0xFEDCBA98</span>  &lt;&lt; <span class="number">32</span>;</span><br><span class="line"><span class="type">int</span>      b = <span class="number">0xFEDCBA98</span>  &lt;&lt; <span class="number">36</span>;</span><br><span class="line"><span class="type">unsigned</span> c = <span class="number">0xFEDCBA89</span>u &gt;&gt; <span class="number">40</span>;</span><br><span class="line"></span><br><span class="line">a == <span class="number">0xFEDCBA98</span> <span class="comment">// 32 % 32 = 0</span></span><br><span class="line">b == <span class="number">0xFFEDCBA9</span> <span class="comment">// 36 % 32 = 4，有符号整数使用 Arithmetic Shift</span></span><br><span class="line">c == <span class="number">0x00FEDCBA</span> <span class="comment">// 40 % 32 = 8，无符号整数使用 Logical Shift</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="整数（Integer）"><a href="#整数（Integer）" class="headerlink" title="整数（Integer）"></a>整数（Integer）</h3><p>C语言对于<strong>有符号整数</strong>和<strong>无符号整数</strong>都定义了相应长度的数据类型。</p>
+<p><img src="/c_data_types.png" alt="C Data Types"></p>
+<h4 id="无符号整数（Unsigned-Integer）"><a href="#无符号整数（Unsigned-Integer）" class="headerlink" title="无符号整数（Unsigned Integer）"></a>无符号整数（Unsigned Integer）</h4><p>无符号整数可以直接转换为二进制，比如用<code>8 bit</code>可以表示 $2^8$ 个数，即 <code>00 00 00 00</code> 到 <code>11 11 11 11</code> (0-255)。对于一个<code>w</code>位的<code>unsigned int</code>，能够表示的范围是 $0$-$2^w-1$，我们记他的最大值为 $UMax_w$（每一位都为1）。每一个在范围中的数都有唯一的 Binary Number 与其对应。</p>
+<h4 id="有符号整数（Signed-Integer）"><a href="#有符号整数（Signed-Integer）" class="headerlink" title="有符号整数（Signed Integer）"></a>有符号整数（Signed Integer）</h4><p>绝大多数的机器都采用<strong>补码</strong> <strong>Two’s Complement Encoding</strong> 的方式表示有符号整数，即最高位的权重变为 $-2^{w-1}$ （称为 sign bit），其它位的权重不变。对于一个 $w$ 位的有符号整数：</p>
+<ul>
+<li>正数<ul>
+<li>0为所有位都为<code>0</code> (<code>0000</code>)</li>
+<li>最大的正数为最高位为<code>0</code>，其余位为<code>1</code> (<code>0111</code>)，记为 $TMax_w &#x3D; 2^{w-1}-1$</li>
+</ul>
+</li>
+<li>负数<ul>
+<li>最小的负数为最高位为<code>1</code>，其余位为<code>0</code> (<code>1000</code>)，记为 $TMin_w &#x3D; -2^{w-1}$</li>
+<li>最大的负数（-1）为所有位都为<code>1</code> (<code>1111</code>)<br>对于一个用<strong>补码</strong>表示的有符号整数，sign bit 为<code>0</code>即为正数，<code>1</code>即为负数。</li>
+</ul>
+</li>
+</ul>
+<p>以下是不同长度的整数能表示的范围：<br><img src="/value_for_different_size.png" alt="Values for Different Word Size"></p>
+<ul>
+<li>$|TMin| &#x3D; TMax + 1$ （有符号整数的表示范围并不是关于原点对称的）</li>
+<li>$UMax &#x3D; 2 * TMax + 1$</li>
+</ul>
+<blockquote>
+<p>使用<strong>补码</strong>的好处</p>
+<ul>
+<li><code>0</code>只有一种表示方式，没有重复</li>
+<li>有符号和无符号整数的加减操作是统一的</li>
+<li>取一个数的负数只需翻转所有bit并加1</li>
+</ul>
+</blockquote>
+<h4 id="无符号整数和有符号整数之间的转换"><a href="#无符号整数和有符号整数之间的转换" class="headerlink" title="无符号整数和有符号整数之间的转换"></a>无符号整数和有符号整数之间的转换</h4><p><span style="color: orange;"><strong>Signed 和 Unsigned 之间的转换不改变数据，只改变数据的解析方式</strong></span></p>
+<p>举个例子，将一个有符号整数的负数转换为无符号整数:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">char</span> a = <span class="number">0x9D</span>; <span class="comment">// 1001 1101  （-99）</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">char</span> b = (<span class="type">unsigned</span> <span class="type">char</span>)a; <span class="comment">// 依旧是 1001 1101，但b变成了157</span></span><br></pre></td></tr></table></figure>
+<p>一个负数经过<strong>无符号-&gt;有符号</strong>的转换后变为了一个<em>很大的正数</em>。</p>
+<p><img src="/T2U_U2T.png" alt="4 bit Signed 和 Unsigned 之间的转换"></p>
+<p>从这张图我们可以看出对于 Signed，<strong>正数部分</strong>直接对应 Unsigned，而<strong>负数部分</strong>变为了在整数部分之后的更大的正数，<code>-1</code>经过转换之后变为的最大的正数<code>15</code>。从下图可以更清楚地看出其<strong>对应关系</strong>：</p>
+<p><img src="/TU_convertion.png" alt="T 和 U 之间的对应关系"></p>
+<blockquote>
+<p><strong>在C语言中我们往往会忽视 Signed 和 Unsigned 带来的 bug：</strong></p>
+<ul>
+<li>常数默认为 Signed，带有后缀<code>U</code>的为 Unsigned，比如<code>123456U</code></li>
+<li>可以使用<code>()</code>来显式转换，但在赋值过程中也会发生隐式转换，比如<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> tx, ty; <span class="type">unsigned</span> ux, uy;</span><br><span class="line">tx = ux; uy = ty; <span class="comment">// 发生隐式转换</span></span><br></pre></td></tr></table></figure></li>
+<li><span style="color: orange;"><strong>如果在一个表达式（包括比较<code>&lt;</code>, <code>==</code>等）中既有Signed又有Unsigned，则所有Signed隐式转换为Unsigned</strong></span>，比如以下表达式都是成立的：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">-1</span> &gt; <span class="number">0U</span>   <span class="comment">// Unsigned比较</span></span><br><span class="line"><span class="number">2147483647</span> &gt; <span class="number">-2147483647</span><span class="number">-1</span></span><br><span class="line"><span class="number">2147483647U</span> &gt; <span class="number">-2147483647</span><span class="number">-1</span>      <span class="comment">// Unsigned比较</span></span><br><span class="line"><span class="number">2147483647</span> &gt; (<span class="type">int</span>)<span class="number">2147483648U</span>    <span class="comment">// Signed比较</span></span><br><span class="line">(<span class="type">unsigned</span>)<span class="number">-1</span> &gt; <span class="number">-2</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</blockquote>
+<p><em>为什么要将 $TMin$ 表示为 <code>-2147483647-1</code> 而不是 <code>-2147483648</code> 可以参考这篇文章 <a target="_blank" rel="noopener" href="https://csapp.cs.cmu.edu/2e/waside/waside-tmin.pdf">https://csapp.cs.cmu.edu/2e/waside/waside-tmin.pdf</a></em></p>
+<h4 id="不同长度的正数之间的转换"><a href="#不同长度的正数之间的转换" class="headerlink" title="不同长度的正数之间的转换"></a>不同长度的正数之间的转换</h4><h5 id="扩展（Expanding）：增加长度"><a href="#扩展（Expanding）：增加长度" class="headerlink" title="扩展（Expanding）：增加长度"></a>扩展（Expanding）：增加长度</h5><ul>
+<li>对于<strong>无符号整数</strong>，直接在前面补上<code>0</code>，不改变数值。（Zero Extension）</li>
+<li>对于<strong>有符号整数</strong>，在前面补上原本最高位的值，可以自行证明同样也不会改变原先的数值。（Sign Extension）</li>
+</ul>
+<h5 id="截断（Truncating）：减少长度"><a href="#截断（Truncating）：减少长度" class="headerlink" title="截断（Truncating）：减少长度"></a>截断（Truncating）：减少长度</h5><ul>
+<li>对于<strong>无符号整数</strong>和<strong>有符号整数</strong>，直接丢掉溢出的位，对于较大的数数值可能改变，对于有符号整数其正负性也可能会改变。</li>
+</ul>
+<h4 id="整数运算"><a href="#整数运算" class="headerlink" title="整数运算"></a>整数运算</h4><h5 id="加法"><a href="#加法" class="headerlink" title="加法"></a>加法</h5><p>通过观察不难发现，两个 $w$ 位的二进制数相加，最多可能得到 $w+1$ 位的结果，但数据类型只能存 $w$ 位，需要丢掉最高位。也就是说，如果两个较大的数相加，我们可能会得到错误的结果，这就是<strong>溢出</strong>（Overflow）。可以用如下表达式表示加法：<br>$$s&#x3D;Add_w(u,v)&#x3D;u+v\space mod\space 2^w$$</p>
+<p><strong>有符号整数</strong>和无符号整数的加法有着相同的位运算。有符号整数不仅会在正数上界有正溢出（Positive Overflow）的可能，变成一个负数；当两个负数相加时还有可能超过下界造成负溢出（Negative Overflow）变成一个很大的正数。</p>
+<p><img src="/add_overflow.png" alt="正负溢出"></p>
+<h5 id="减法"><a href="#减法" class="headerlink" title="减法"></a>减法</h5><p>减法可以看做一个数加上另一个数的相反数，与加法类似。</p>
+<h5 id="乘法"><a href="#乘法" class="headerlink" title="乘法"></a>乘法</h5><ul>
+<li>两个 $w$ 位的二进制数相乘，最多可能得到 $2w$ 位，超出范围的位都要丢掉。</li>
+<li>无符号和有符号整数依旧有着相同的位运算。</li>
+<li>有符号整数乘法的Overflow同样可能会<strong>改变正负</strong>。</li>
+</ul>
+<blockquote>
+<p>这里有一个很有用的小技巧：对一个数左移位相当于乘以2的次方<br><code>u &lt;&lt; k</code> 相当于 $u*2^k$ (Signed,Unsigned都可用)</p>
+<ul>
+<li>位运算比乘法更快</li>
+<li>大多数编译器会自动检测，并帮你自动改写<br>同样，对于<strong>无符号整数</strong>，右移相当于除以2的次方（并取下整）<code>u &gt;&gt; k</code> 相当于 $\lfloor u&#x2F;2^k\rfloor$，如图：</li>
+</ul>
+</blockquote>
+<p><img src="/div.png" alt="右移相当于除以2的次方"></p>
+<h4 id="务必小心Signed和Unsigned的带来的Bug！"><a href="#务必小心Signed和Unsigned的带来的Bug！" class="headerlink" title="务必小心Signed和Unsigned的带来的Bug！"></a>务必小心Signed和Unsigned的带来的Bug！</h4><p>如果不了解Signed和Unsigned的具体原理，很容易就写出有问题的程序，比如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="type">unsigned</span> i = cnt - <span class="number">2</span>; i &gt;= <span class="number">0</span>; i--) a[i] += a[i + <span class="number">1</span>];   <span class="comment">// i会变成很大的数，造成Seg Fault</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DELTA sizeof(int)</span></span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = CNT; i - DELTA &gt;= <span class="number">0</span>; i -= DELTA) &#123;&#125;    <span class="comment">// 死循环，sizeof返回无符号整数</span></span><br></pre></td></tr></table></figure></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Wayoung7</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/07/21/cmu213/part1_data/index/">http://example.com/2024/07/21/cmu213/part1_data/index/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Wayoung7's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/">计算机系统</a><a class="post-meta__tags" href="/tags/C/">C</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/2024/07/24/hello-world/" title="Hello World"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Hello World</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Wayoung7</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA"><span class="toc-number">1.</span> <span class="toc-text">数据的机器级表示</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%8D%E8%BF%90%E7%AE%97%EF%BC%88Bitwise-Operations%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">位运算（Bitwise Operations）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%B7%A6%E7%A7%BB%EF%BC%88Left-Shift%EF%BC%89"><span class="toc-number">1.1.0.1.</span> <span class="toc-text">左移（Left Shift）&lt;&lt;</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8F%B3%E7%A7%BB%EF%BC%88Right-Shift%EF%BC%89"><span class="toc-number">1.1.0.2.</span> <span class="toc-text">右移（Right Shift）&gt;&gt;</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B4%E6%95%B0%EF%BC%88Integer%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">整数（Integer）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B4%E6%95%B0%EF%BC%88Unsigned-Integer%EF%BC%89"><span class="toc-number">1.2.1.</span> <span class="toc-text">无符号整数（Unsigned Integer）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%89%E7%AC%A6%E5%8F%B7%E6%95%B4%E6%95%B0%EF%BC%88Signed-Integer%EF%BC%89"><span class="toc-number">1.2.2.</span> <span class="toc-text">有符号整数（Signed Integer）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B4%E6%95%B0%E5%92%8C%E6%9C%89%E7%AC%A6%E5%8F%B7%E6%95%B4%E6%95%B0%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2"><span class="toc-number">1.2.3.</span> <span class="toc-text">无符号整数和有符号整数之间的转换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8D%E5%90%8C%E9%95%BF%E5%BA%A6%E7%9A%84%E6%AD%A3%E6%95%B0%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2"><span class="toc-number">1.2.4.</span> <span class="toc-text">不同长度的正数之间的转换</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%89%A9%E5%B1%95%EF%BC%88Expanding%EF%BC%89%EF%BC%9A%E5%A2%9E%E5%8A%A0%E9%95%BF%E5%BA%A6"><span class="toc-number">1.2.4.1.</span> <span class="toc-text">扩展（Expanding）：增加长度</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%88%AA%E6%96%AD%EF%BC%88Truncating%EF%BC%89%EF%BC%9A%E5%87%8F%E5%B0%91%E9%95%BF%E5%BA%A6"><span class="toc-number">1.2.4.2.</span> <span class="toc-text">截断（Truncating）：减少长度</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B4%E6%95%B0%E8%BF%90%E7%AE%97"><span class="toc-number">1.2.5.</span> <span class="toc-text">整数运算</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8A%A0%E6%B3%95"><span class="toc-number">1.2.5.1.</span> <span class="toc-text">加法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%87%8F%E6%B3%95"><span class="toc-number">1.2.5.2.</span> <span class="toc-text">减法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%B9%98%E6%B3%95"><span class="toc-number">1.2.5.3.</span> <span class="toc-text">乘法</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8A%A1%E5%BF%85%E5%B0%8F%E5%BF%83Signed%E5%92%8CUnsigned%E7%9A%84%E5%B8%A6%E6%9D%A5%E7%9A%84Bug%EF%BC%81"><span class="toc-number">1.2.6.</span> <span class="toc-text">务必小心Signed和Unsigned的带来的Bug！</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/24/test/" title="test">test</a><time datetime="2024-07-24T03:40:17.000Z" title="发表于 2024-07-24 11:40:17">2024-07-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/24/hello-world/" title="Hello World">Hello World</a><time datetime="2024-07-24T03:35:40.533Z" title="发表于 2024-07-24 11:35:40">2024-07-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/21/cmu213/part1_data/index/" title="CSAPP深入理解计算机系统：数据在计算机中的表示">CSAPP深入理解计算机系统：数据在计算机中的表示</a><time datetime="2024-07-20T16:00:00.000Z" title="发表于 2024-07-21 00:00:00">2024-07-21</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Wayoung7</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
