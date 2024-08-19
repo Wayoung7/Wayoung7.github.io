@@ -4,16 +4,16 @@
 
 # Site
 title: Wayoung7's Blog
-subtitle: ''
-description: ''
-keywords:
+subtitle: 欢迎来到我的博客
+description: 分享CS学习过程中的收获
+keywords: csapp, cs, blog, memory
 author: Wayoung7
 language: zh-CN
 timezone: ''
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: http://example.com
+url: http://Wayoung7.github.io/
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
@@ -102,4 +102,8 @@ theme: butterfly
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  repo: https://github.com/Wayoung7/blog
+  repo: https://github.com/Wayoung7/Wayoung7.github.io
+
+markdown:
+    plugins:
+      - '@renbaoshuo/markdown-it-katex'
