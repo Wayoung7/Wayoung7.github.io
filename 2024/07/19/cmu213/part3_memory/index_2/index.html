@@ -1,0 +1,228 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>CSAPP深入理解计算机系统：缓存、内存和虚拟内存（下） | Wayoung7's Blog</title><meta name="author" content="Wayoung7"><meta name="copyright" content="Wayoung7"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="CMU-213学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSAPP深入理解计算机系统：缓存、内存和虚拟内存（下）">
+<meta property="og:url" content="http://wayoung7.github.io/2024/07/19/cmu213/part3_memory/index_2/index.html">
+<meta property="og:site_name" content="Wayoung7&#39;s Blog">
+<meta property="og:description" content="CMU-213学习笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://wayoung7.github.io/img/cmu213/p3_cover.jpg">
+<meta property="article:published_time" content="2024-07-18T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-09-07T07:12:39.679Z">
+<meta property="article:author" content="Wayoung7">
+<meta property="article:tag" content="计算机系统">
+<meta property="article:tag" content="C">
+<meta property="article:tag" content="CMU-213">
+<meta property="article:tag" content="内存">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://wayoung7.github.io/img/cmu213/p3_cover.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://wayoung7.github.io/2024/07/19/cmu213/part3_memory/index_2/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'CSAPP深入理解计算机系统：缓存、内存和虚拟内存（下）',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-09-07 15:12:39'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="Wayoung7's Blog"><span class="site-name">Wayoung7's Blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">CSAPP深入理解计算机系统：缓存、内存和虚拟内存（下）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-07-18T16:00:00.000Z" title="发表于 2024-07-19 00:00:00">2024-07-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-09-07T07:12:39.679Z" title="更新于 2024-09-07 15:12:39">2024-09-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="CSAPP深入理解计算机系统：缓存、内存和虚拟内存（下）"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="post-content" id="article-container"><h2 id="虚拟内存（Virtual-Memory）">虚拟内存（Virtual Memory）</h2>
+<h3 id="内存分页">内存分页</h3>
+<p>早期的计算机内存被管理为一个数据的array，程序使用内存的物理地址来index数据，然而这样的设计过于简单，无法构建复杂的系统。现在计算机中的内存管理使用虚拟内存（Virtual Memory）只有在一些简单的嵌入式系统中还保留物理地址的方式。</p>
+<blockquote>
+<p>我们可以考虑以下因素：现代cpu都是多核的，能够并行地执行程序，每个进程都需要使用一部分内存，计算机系统需要一种能够管理所有进程的内存的方法；每个计算机的进程数也是不固定的，因此需要一种能够随意扩展的内存管理方式；并且，每个进程都应该有相同的内存访问方式，目的是将访问内存的方式抽象化，这样更上一层的软件就不用关心内存的管理过程。</p>
+</blockquote>
+<p>于是现代计算机系统使用虚拟内存技术来实现这一目的。每个进程都有一个虚拟内存空间，下图是一个Linux进程的虚拟内存：</p>
+<p><img src="/img/cmu213/vm_vm.png" alt="Virtual Memory of a Linux System"></p>
+<p>其中有我们熟知的Stack和Heap，Code区域为程序的指令，Initialized data区域为全局常数或字符串，Memory-Mapped Region用于管理共享的库，虚拟内存中高位的区域被Kernel的数据占用。实际上Virtual Memory中大部分的空间都是未分配的。</p>
+<p>当一个进程访问一个地址时，这个地址其实是对应虚拟内存的虚拟地址，需要通过一定方式转化为物理地址后才能发给内存。</p>
+<p>而在上一章中提到过，内存是磁盘的cache，当需要访问的数据不在内存中时（Miss），需要从磁盘中retrieve数据。当内存中已经没有空位时，需要发生内存交换，将一部分内存中的数据flush到磁盘中，再将需要的数据块复制到内存中，内存和磁盘交换数据的最小单位block被称为页（Page），内存和磁盘中的数据被分为很多的Page，又因为它们实际存储着数据，因此被称为物理页（Physical Page）。同样，虚拟内也被分页，他的内存页是虚拟页（Virtual Page），因为Virtual Memory是由于需要内存管理而被想象出来的内存空间，并不存储于某个地方。</p>
+<p>因此，只需要一张表，将每个进程中的虚拟页map到物理页，就能实现：通过虚拟地址，访问物理存储器。虚拟页有三种情况：</p>
+<ul>
+<li>被使用（Allocated），存储在磁盘上</li>
+<li>被使用（Allocated），存储在内存中和磁盘上（Cached）</li>
+<li>未被使用（Unallocated）</li>
+</ul>
+<p>这张表的每行（Page Table Entry）包含：</p>
+<ul>
+<li>一个 <code>Valid</code> bit，表示是否Cashed</li>
+<li>物理页地址（如果是Cashed），或磁盘地址，或 <code>NULL</code>（如果是Unallocated）</li>
+</ul>
+<p><img src="/img/cmu213/vm_page_table.png" alt="Page Table"></p>
+<p>每个进程都有一个Page Table，不同的虚拟页可能对应同一个物理页：</p>
+<p><img src="/img/cmu213/vm_separate_page_table.png" alt="Page Table"></p>
+<h3 id="虚拟内存的优点">虚拟内存的优点</h3>
+<p>除了上述提到的这些优点，虚拟内存还有以下优点：</p>
+<ul>
+<li>同一个物理页可以共享被多个进程使用，比如Kernel中的一些共享的数据，还有共享的库</li>
+<li>虚拟内存中连续的Page在物理内存中可以不连续</li>
+<li>可以单独给每个Page设置读写权限</li>
+</ul>
+<h3 id="地址转换">地址转换</h3>
+<p>计算机中由MMU负责虚拟地址到物理地址的转换。</p>
+<p><img src="/img/cmu213/vm_addr_trans.png" alt="Address Translation"></p>
+<p>如图，在转换过程中，page offset不变，virtual page number用于查表。</p>
+<p>Page Table也需要被存在物理存储器中，MMU需要获取Page Table来进行转换，如果Page Table不在缓存中，还需一级一级向下查找。为了提高效率，cpu核心中有一个专门用于cache Page Table的缓存：TLB</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://Wayoung7.github.io">Wayoung7</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://wayoung7.github.io/2024/07/19/cmu213/part3_memory/index_2/">http://wayoung7.github.io/2024/07/19/cmu213/part3_memory/index_2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://Wayoung7.github.io" target="_blank">Wayoung7's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/">计算机系统</a><a class="post-meta__tags" href="/tags/C/">C</a><a class="post-meta__tags" href="/tags/CMU-213/">CMU-213</a><a class="post-meta__tags" href="/tags/%E5%86%85%E5%AD%98/">内存</a></div><div class="post_share"><div class="social-share" data-image="/img/cmu213/p3_cover.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/08/22/cmu15445/index/" title="Basic Idea of Database System: Bustub"><img class="cover" src="/img/cmu15445/cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Basic Idea of Database System: Bustub</div></div></a></div><div class="next-post pull-right"><a href="/2024/07/03/cmu213/part3_memory/index_1/" title="CSAPP深入理解计算机系统：缓存、内存和虚拟内存（上）"><img class="cover" src="/img/cmu213/p3_cover.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">CSAPP深入理解计算机系统：缓存、内存和虚拟内存（上）</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/07/03/cmu213/part3_memory/index_1/" title="CSAPP深入理解计算机系统：缓存、内存和虚拟内存（上）"><img class="cover" src="/img/cmu213/p3_cover.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-03</div><div class="title">CSAPP深入理解计算机系统：缓存、内存和虚拟内存（上）</div></div></a></div><div><a href="/2024/05/28/cmu213/part2_machine/index_1/" title="CSAPP深入理解计算机系统：程序的机器级表示（上）"><img class="cover" src="/img/cmu213/p2_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-28</div><div class="title">CSAPP深入理解计算机系统：程序的机器级表示（上）</div></div></a></div><div><a href="/2024/06/14/cmu213/part2_machine/index_2/" title="CSAPP深入理解计算机系统：程序的机器级表示（下）"><img class="cover" src="/img/cmu213/p2_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-14</div><div class="title">CSAPP深入理解计算机系统：程序的机器级表示（下）</div></div></a></div><div><a href="/2024/05/21/cmu213/part1_data/index/" title="CSAPP深入理解计算机系统：数据在计算机中的表示"><img class="cover" src="/img/cmu213/p1_cover.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-21</div><div class="title">CSAPP深入理解计算机系统：数据在计算机中的表示</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Wayoung7</div><div class="author-info__description">分享CS学习过程中的收获</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Wayoung7"><i class="fab fa-github"></i><span>Follow Me on Github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://space.bilibili.com/316348640" target="_blank" title="Bilibili"><i class="fab fa-bilibili" style="color: #00A2D8;"></i></a><a class="social-icon" href="https://github.com/Wayoung7" target="_blank" title="Github"><i class="fab fa-github" style="color: ;"></i></a><a class="social-icon" href="mailto:yiyang331097@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%EF%BC%88Virtual-Memory%EF%BC%89"><span class="toc-text">虚拟内存（Virtual Memory）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E5%88%86%E9%A1%B5"><span class="toc-text">内存分页</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E7%9A%84%E4%BC%98%E7%82%B9"><span class="toc-text">虚拟内存的优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2"><span class="toc-text">地址转换</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/08/22/cmu15445/index/" title="Basic Idea of Database System: Bustub"><img src="/img/cmu15445/cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Basic Idea of Database System: Bustub"/></a><div class="content"><a class="title" href="/2024/08/22/cmu15445/index/" title="Basic Idea of Database System: Bustub">Basic Idea of Database System: Bustub</a><time datetime="2024-08-21T16:00:00.000Z" title="发表于 2024-08-22 00:00:00">2024-08-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/19/cmu213/part3_memory/index_2/" title="CSAPP深入理解计算机系统：缓存、内存和虚拟内存（下）"><img src="/img/cmu213/p3_cover.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CSAPP深入理解计算机系统：缓存、内存和虚拟内存（下）"/></a><div class="content"><a class="title" href="/2024/07/19/cmu213/part3_memory/index_2/" title="CSAPP深入理解计算机系统：缓存、内存和虚拟内存（下）">CSAPP深入理解计算机系统：缓存、内存和虚拟内存（下）</a><time datetime="2024-07-18T16:00:00.000Z" title="发表于 2024-07-19 00:00:00">2024-07-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/03/cmu213/part3_memory/index_1/" title="CSAPP深入理解计算机系统：缓存、内存和虚拟内存（上）"><img src="/img/cmu213/p3_cover.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CSAPP深入理解计算机系统：缓存、内存和虚拟内存（上）"/></a><div class="content"><a class="title" href="/2024/07/03/cmu213/part3_memory/index_1/" title="CSAPP深入理解计算机系统：缓存、内存和虚拟内存（上）">CSAPP深入理解计算机系统：缓存、内存和虚拟内存（上）</a><time datetime="2024-07-02T16:00:00.000Z" title="发表于 2024-07-03 00:00:00">2024-07-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/06/14/cmu213/part2_machine/index_2/" title="CSAPP深入理解计算机系统：程序的机器级表示（下）"><img src="/img/cmu213/p2_cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CSAPP深入理解计算机系统：程序的机器级表示（下）"/></a><div class="content"><a class="title" href="/2024/06/14/cmu213/part2_machine/index_2/" title="CSAPP深入理解计算机系统：程序的机器级表示（下）">CSAPP深入理解计算机系统：程序的机器级表示（下）</a><time datetime="2024-06-13T16:00:00.000Z" title="发表于 2024-06-14 00:00:00">2024-06-14</time></div></div></div></div></div></div></main><footer id="footer" style="background: #102C57"><div id="footer-wrap"><div class="copyright">&copy;2024 By Wayoung7</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>(() => {
+  const initValine = () => {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '3OEhXjHp7MgOEv4VJCqI6X9A-gzGzoHsz',
+      appKey: '2BYbp0BvcVBxnW4u8fbYo1yt',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  const loadValine = async () => {
+    if (typeof Valine === 'function') initValine()
+    else {
+      await getScript('https://cdn.jsdelivr.net/npm/valine@1.5.1/dist/Valine.min.js')
+      initValine()
+    }
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
