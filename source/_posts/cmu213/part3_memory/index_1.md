@@ -1,8 +1,8 @@
 ---
 title: CSAPP深入理解计算机系统：缓存、内存和虚拟内存（上）
-date: 2024-08-19
+date: 2024-07-03
 description: CMU-213学习笔记
-cover: /img/cmu213/p2_cover.png
+cover: /img/cmu213/p3_cover.jpg
 tags: 
     - 计算机系统
     - C

@@ -1,6 +1,6 @@
 ---
 title: CSAPP深入理解计算机系统：程序的机器级表示（上）
-date: 2024-07-28
+date: 2024-05-28
 description: CMU-213学习笔记
 cover: /img/cmu213/p2_cover.png
 tags: 

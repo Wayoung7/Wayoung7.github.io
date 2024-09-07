@@ -1,6 +1,6 @@
 ---
 title: CSAPP深入理解计算机系统：数据在计算机中的表示
-date: 2024-07-21
+date: 2024-05-21
 description: CMU-213学习笔记
 cover: /img/cmu213/p1_cover.jpg
 tags: 
